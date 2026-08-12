@@ -10,7 +10,19 @@ export interface BookLike {
   description: string;
   cover: string;
 }
+export interface LineItemLike {
+  bookId: string;
+  quantity: number;
+  unitPrice: number;
+}
+export interface OrderLike {
+  id: string;
+  items: LineItemLike[];
+  total: number;
+}
 export function escapeHtml(value: unknown): string;
 export function formatPrice(price: number): string;
 export function bookCardHTML(book: BookLike): string;
 export function bookDetailHTML(book: BookLike): string;
+export function cartItemHTML(item: LineItemLike, title: string): string;
+export function orderConfirmationHTML(order: OrderLike): string;

@@ -8,7 +8,7 @@ export default tseslint.config(
   {
     files: ["public/**/*.js"],
     languageOptions: {
-      globals: { window: "readonly", document: "readonly", fetch: "readonly" },
+      globals: { window: "readonly", document: "readonly", fetch: "readonly", setTimeout: "readonly", Map: "readonly" },
     },
   },
 );

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { escapeHtml, formatPrice, bookCardHTML } from "../public/app.js";
+import { escapeHtml, formatPrice, bookCardHTML, cartItemHTML, orderConfirmationHTML } from "../public/app.js";
 
 const sample = {
   id: "quiet-orbit",
@@ -38,5 +38,42 @@ describe("bookCardHTML", () => {
     // The angle brackets must be escaped, so no real <img ...> tag appears.
     expect(html).not.toContain("<img");
     expect(html).toContain("&lt;img");
+  });
+});
+
+describe("cartItemHTML", () => {
+  const item = { bookId: "the-lantern-sea", quantity: 2, unitPrice: 14.99 };
+
+  it("renders the title, unit price, quantity and line total", () => {
+    const html = cartItemHTML(item, "The Light Between Oceans");
+    expect(html).toContain("The Light Between Oceans");
+    expect(html).toContain("$14.99");
+    expect(html).toContain("2");
+    expect(html).toContain("$29.98");
+  });
+
+  it("escapes a dangerous title", () => {
+    const html = cartItemHTML(item, "<script>alert(1)</script>");
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+});
+
+describe("orderConfirmationHTML", () => {
+  const order = {
+    id: "abc-123",
+    items: [{ bookId: "the-lantern-sea", quantity: 2, unitPrice: 14.99 }],
+    total: 29.98,
+  };
+
+  it("renders the order id and grand total", () => {
+    const html = orderConfirmationHTML(order);
+    expect(html).toContain("abc-123");
+    expect(html).toContain("$29.98");
+  });
+
+  it("renders the line item quantity", () => {
+    const html = orderConfirmationHTML(order);
+    expect(html).toContain("2");
   });
 });

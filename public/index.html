@@ -12,6 +12,7 @@
       <nav class="nav">
         <a class="active" href="/" data-view="home">Home</a>
         <a href="/" data-view="about">About</a>
+        <a href="/" data-view="cart" id="cart-nav">Cart <span id="cart-count" class="cart-badge">0</span></a>
       </nav>
     </header>
 
@@ -91,6 +92,20 @@
 
       <section id="detail-view" hidden>
         <!-- detail injected by app.js -->
+      </section>
+
+      <section id="cart-view" hidden>
+        <h2 class="section-title">Your Cart</h2>
+        <div id="cart-content">
+          <!-- rendered by app.js -->
+        </div>
+      </section>
+
+      <section id="order-view" hidden>
+        <div id="order-content">
+          <!-- rendered by app.js -->
+        </div>
+        <button class="btn ghost" id="order-back-btn">&larr; Back to catalogue</button>
       </section>
 
       <section id="about-view" hidden>
