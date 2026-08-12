@@ -185,6 +185,10 @@ describe("POST /api/carts/:cartId/checkout", () => {
     const res = await request(app).post(`/api/carts/${cartId}/checkout`);
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Cart is empty");
+
+    const cartRes = await request(app).get(`/api/carts/${cartId}`);
+    expect(cartRes.status).toBe(200);
+    expect(cartRes.body).toEqual({ id: cartId, items: [] });
   });
 
   it("responds 409 when quantity exceeds stock", async () => {
