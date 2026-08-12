@@ -19,3 +19,21 @@ export interface Book {
 export interface ApiError {
   error: string;
 }
+
+export interface LineItem {
+  bookId: string;
+  quantity: number;
+  /** Snapshot of Book.price at the time the item was added. */
+  unitPrice: number;
+}
+
+export interface Cart {
+  id: string;
+  items: LineItem[];
+}
+
+export interface Order {
+  id: string;
+  items: LineItem[];
+  total: number;
+}

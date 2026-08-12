@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { booksRouter } from "./routes/books.js";
 import { healthRouter } from "./routes/health.js";
+import { cartRouter } from "./routes/cart.js";
 
 /**
  * Build the Express app WITHOUT starting a listener, so tests can import it
@@ -15,6 +16,7 @@ export function createApp() {
   // API routes.
   app.use(booksRouter);
   app.use(healthRouter);
+  app.use(cartRouter);
 
   // Static storefront (public/index.html, app.js, styles.css).
   const here = dirname(fileURLToPath(import.meta.url));
