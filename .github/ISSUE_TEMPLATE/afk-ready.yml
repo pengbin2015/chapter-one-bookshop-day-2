@@ -13,9 +13,9 @@ body:
   - type: input
     id: intent-feature
     attributes:
-      label: Intent feature ID
-      description: Which feature in docs/intent.md does this ticket belong to? Leave blank if none.
-      placeholder: "F1"
+      label: Requirement or feature reference
+      description: Link the parent requirement or feature identifier, if applicable.
+      placeholder: "Feature identifier or requirements link"
     validations:
       required: false
 
@@ -24,7 +24,7 @@ body:
     attributes:
       label: Problem or goal
       description: What user or developer problem should this issue solve?
-      placeholder: "Customers need to create an empty cart so later requests can add books to it."
+      placeholder: "Who is affected, what happens today, and why should it change?"
     validations:
       required: true
 
@@ -34,8 +34,8 @@ body:
       label: Desired behaviour
       description: Describe the expected behaviour after the change. Include API paths, UI states, or data changes when relevant.
       placeholder: |
-        POST /api/cart returns 201 with a generated cartId and an empty items array.
-        GET /api/cart/:cartId returns the same empty cart.
+        Describe the trigger, expected outcome, and relevant failure behavior.
+        Reference established interfaces and conventions where applicable.
     validations:
       required: true
 
@@ -45,10 +45,9 @@ body:
       label: Acceptance criteria
       description: List objective checks the reviewer can verify.
       placeholder: |
-        - POST /api/cart returns 201 and JSON with cartId, items, and total.
-        - GET /api/cart/:cartId returns 200 for an existing cart.
-        - GET /api/cart/:cartId returns 404 with { error } for an unknown cart.
-        - Existing book and health tests still pass.
+        - Observable successful outcome and how to verify it.
+        - Expected behavior for invalid input or a relevant failure case.
+        - Existing behavior that must continue to work.
     validations:
       required: true
 
@@ -59,14 +58,11 @@ body:
       description: State what is in scope and out of scope so the agent does not guess.
       placeholder: |
         In scope:
-        - In-memory cart storage.
-        - API tests for create and fetch cart.
+        - Components and behavior covered by this issue.
+        - Required tests and documentation.
 
         Out of scope:
-        - Authentication.
-        - Payment.
-        - Browser persistence.
-        - Checkout.
+        - Adjacent features and unrelated changes.
     validations:
       required: true
 
@@ -77,13 +73,11 @@ body:
       description: Point the agent to relevant files, conventions, docs, or existing behaviour.
       placeholder: |
         Relevant files:
-        - src/app.ts
-        - src/store.ts
-        - src/routes/books.ts
-        - tests/books.test.ts
-        - .github/instructions/backend.instructions.md
+        - Existing implementation and test paths.
+        - Applicable repository instructions and architecture decisions.
+        - Requirement or design references.
 
-        Follow AGENTS.md guardrails: no database, no new dependencies, JSON { error } for API errors.
+        Identify constraints from this project rather than assuming a stack.
     validations:
       required: true
 
@@ -92,14 +86,9 @@ body:
     attributes:
       label: Expected tests and checks
       description: Name the tests or verification commands expected before PR handoff.
-      value: |
-        Required commands:
-        - npm run format:check
-        - npm run lint
-        - npm run typecheck
-        - npm test
-        - npm audit --audit-level=high
-      placeholder: "Add route tests in tests/cart.test.ts for create, fetch, and unknown cart."
+      placeholder: |
+        List exact commands from this project’s instructions and CI.
+        Identify expected results and required platform checks.
     validations:
       required: true
 
@@ -109,8 +98,8 @@ body:
       label: Risks or edge cases
       description: List cases the agent should consider, or state "None known."
       placeholder: |
-        - Unknown cart id should be 404, not an empty new cart.
-        - cartId should not collide with existing carts during one process lifetime.
+        - Invalid or missing input.
+        - Partial failures, retries, or compatibility concerns where relevant.
     validations:
       required: true
 
@@ -120,9 +109,24 @@ body:
       label: Non-goals
       description: Explicitly list tempting work the agent must not do.
       placeholder: |
-        - Do not build checkout in this ticket.
-        - Do not add frontend cart UI yet.
-        - Do not introduce sessions, auth, or database persistence.
+        - Features explicitly deferred from this issue.
+        - Components or interfaces that must remain unchanged.
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-plan
+    attributes:
+      label: Implementation plan
+      description: Provide the approved phases, affected paths, acceptance criteria per phase, and checks.
+    validations:
+      required: true
+
+  - type: textarea
+    id: approval-evidence
+    attributes:
+      label: Approval evidence
+      description: Link the approval record and identify the approved scope/version under your team's policy. Complete this before unattended assignment.
     validations:
       required: true
 
@@ -141,6 +145,8 @@ body:
         - label: Relevant files or code areas are named.
           required: true
         - label: Required verification commands are listed.
+          required: true
+        - label: The implementation plan and scope are approved under the team's policy.
           required: true
         - label: No secrets, external accounts, payment providers, or production data are required.
           required: true

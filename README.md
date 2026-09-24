@@ -22,9 +22,13 @@ SDLC Playbook:
   (pick them in the agent menu), plus `planner`, `implementer`, and `reviewer`
   (subagents).
 
-See `docs/ai-native-flow.md` for the full flow and the demo script.
+See `docs/ai-native-flow.md` for the detailed interactive demo, workflow, and
+instructions for sharing the agents and skills with other projects.
+Project-specific constraints live in `AGENTS.md`; reusable roles discover them
+there.
 
-The AFK-agent demo is documented in `docs/afk-pipeline.md`.
+Then use `docs/afk-pipeline.md` for the detailed approved-issue/AFK demo, issue
+contract, local fallback, and integration limits.
 
 ## Run it
 
@@ -76,7 +80,8 @@ Read **`AGENTS.md`** first — it holds the conventions, guardrails, and the
 skill routing table. Path-specific rules live in `.github/instructions/`,
 role agents in `.github/agents/`, and skills in `.github/skills/`.
 
-For the cart + checkout exercise: pick the **product-manager** agent and say
-"Turn the feedback in docs/inputs into an intent", then "Design F1". Then pick
-the **orchestrator** agent (or press **Build this feature →**) and say
-"Ship F1".
+For the cart + checkout exercise, pick the **product-manager** agent and say
+"Turn the feedback in docs/inputs into an intent," then approve the requirements.
+Next, pick the **orchestrator** agent (or press **Build this feature →**) and say
+"Ship F1." The orchestrator handles design and planning approvals before
+implementation.

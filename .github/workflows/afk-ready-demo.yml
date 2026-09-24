@@ -8,7 +8,6 @@ on:
 permissions:
   contents: read
   issues: read
-  pull-requests: write
 
 jobs:
   explain-afk-flow:
@@ -21,13 +20,14 @@ jobs:
       - name: Show intended AFK pipeline
         run: |
           echo "Eligible issue label: afk-ready"
+          echo "This workflow describes the process and validates this repository; it does not dispatch agents or open PRs."
           echo "Entrypoint custom agent: .github/agents/orchestrator.agent.md"
           echo "Pipeline:"
           echo "1. Orchestrator reads the issue."
-          echo "2. Orchestrator confirms the issue is small, clear, and testable."
+          echo "2. Orchestrator verifies scope, plan, approval evidence, and authorized assignment."
           echo "3. Implementer edits the code with TDD (shipping-a-feature, AFK mode)."
           echo "4. Reviewer runs format, lint, typecheck, tests, and security checks."
-          echo "5. Automation opens a PR and asks Copilot to review first."
+          echo "5. The configured agent integration opens a PR and requests the team's review sequence."
           echo "6. Human performs the second review."
 
       - name: Install dependencies

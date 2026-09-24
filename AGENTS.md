@@ -72,21 +72,28 @@ These rules take precedence over any skill-priority rule inside a skill
 (including `using-superpowers`). Pick the first row that matches, then read
 that skill **by path** and follow it.
 
-| The request...                                                         | Read first                                                                  |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| turns feedback, pain points, or an idea into requirements              | `.github/skills/capturing-intent/SKILL.md`                                  |
-| names a feature ID (`F1`, `F2`, ...) or asks to ship/build/deliver one | `.github/skills/shipping-a-feature/SKILL.md` (it runs brainstorming itself) |
-| asks to open or raise a pull request                                   | `.github/skills/opening-a-pull-request/SKILL.md`                            |
-| asks to commit                                                         | `.github/skills/committing-changes/SKILL.md`                                |
-| any other new feature or behaviour change                              | `.github/skills/brainstorming/SKILL.md`                                     |
-| a bug or failing test                                                  | `.github/skills/systematic-debugging/SKILL.md`                              |
+| The request...                                            | Read first                                                                    |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| turns feedback, pain points, or an idea into requirements | `.github/skills/capturing-intent/SKILL.md`                                    |
+| asks to design, build, or deliver a feature               | `.github/skills/shipping-a-feature/SKILL.md` (it verifies requirements first) |
+| asks to open or raise a pull request                      | `.github/skills/opening-a-pull-request/SKILL.md`                              |
+| asks to commit                                            | `.github/skills/committing-changes/SKILL.md`                                  |
+| a bug or failing test                                     | `.github/skills/systematic-debugging/SKILL.md`                                |
 
 Every skill and agent starts its reply with an announce line
-(`Using <skill> ...` or `<agent>: ...`). If it is missing, the skill did not
-load — stop and read it.
+(`Using <skill> ...` or `<agent>: ...`). Read the chosen file; an announcement
+alone is not proof that its instructions were followed.
 
-If `docs/intent.md` exists, every spec must trace to one of its feature IDs
-(`Traces to: intent F<n>`).
+For intent-based work, specs trace to the relevant feature ID. For a standalone
+approved issue, trace to the issue and its recorded approval instead.
+
+Reusable agents and skills resolve project choices from this file. This
+repository uses `docs/intent.md`, the artifact directories under
+`docs/superpowers/`, and the commands listed above. Final review also runs
+`npm run format:check` and `npm audit --audit-level=high`. Its PR review order
+is Copilot review followed by human review. Unattended issues require recorded
+approval of scope and plan plus an authorized assignment; a label alone is
+not approval.
 
 ## What else is in .github/
 
@@ -119,10 +126,11 @@ See `docs/ai-native-flow.md` for the full picture. In short:
    `requesting-code-review` → `opening-a-pull-request` → a human reviews and
    merges (gate 3).
 
-In class we use a feature branch instead of `using-git-worktrees`, and
+This repository uses a feature branch instead of `using-git-worktrees`, and
 `opening-a-pull-request` instead of `finishing-a-development-branch`.
 
 ## AFK pipeline
 
-See `docs/afk-pipeline.md` for the issue-template, orchestrator, and PR-review
-flow used by the AFK demo.
+See `docs/afk-pipeline.md` for the issue contract, orchestrator, and PR-review
+flow. The existing CI workflow prints the intended flow and validates this
+repository; it does not dispatch agents or open PRs.

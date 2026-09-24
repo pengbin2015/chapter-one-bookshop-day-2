@@ -1,25 +1,28 @@
 ---
 name: committing-changes
-description: "Use when changes need to be committed — e.g. 'commit this', 'commit the phase', or when another skill says to commit. Stages one logical change and writes a Conventional Commit using the domain glossary."
+description: "Use when asked to commit changes or when an authorized workflow reaches a commit step."
 ---
 
 # Committing Changes
 
 **Announce first:** `Using committing-changes.`
 
-1. Review the working changes with `git status` and `git diff`.
-2. Group them into **one logical commit**. If they belong in separate commits,
-   say so and commit them one at a time.
-3. Stage only the relevant files. Never stage `node_modules`, secrets, `.env`
-   files, or unrelated changes.
-4. Write the message:
-   - summary line `type(scope): summary`, under ~60 characters
-     (types: feat, fix, docs, chore, refactor, test) — e.g.
-     `feat(cart): add cart tracer route`;
-   - a blank line;
-   - a short body explaining **why**, if not obvious;
-   - use the vocabulary in `docs/glossary.md` (cart, line item, checkout, ...).
-5. When working interactively, show the staged files and the message before
-   committing. When running as a subagent or in AFK mode, commit directly.
-6. Run `git commit`. If the pre-commit hook changes files, re-stage them and
-   commit again — do not bypass the hook with `--no-verify`.
+1. Read repository commit conventions and inspect the branch, working tree,
+   staged diff, and unstaged diff.
+2. Identify one logical change. Preserve unrelated staged and unstaged work;
+   do not reset, discard, or include it implicitly.
+3. Stage only the relevant paths or hunks. Exclude credentials, local
+   configuration, dependencies, and generated files unless they are intended
+   tracked artifacts under the project's conventions.
+4. Review the staged diff and write a message using the repository's format
+   and terminology. If no format is specified, use a Conventional Commit:
+   `type(scope): summary`, with a short body explaining why where useful.
+   A glossary is optional; use it when the project has one.
+5. In interactive work, show the files and proposed message. Commit within
+   the authorization already given; ask only if scope or ownership is unclear.
+   Subagents follow the same scope rules without an extra presentation step.
+6. Run the commit with hooks enabled. If a hook changes files, inspect its
+   changes and re-stage only relevant changes before retrying. Do not bypass
+   a failing check.
+7. Report the commit ID and remaining working-tree changes. Do not push
+   unless the user or enclosing workflow also authorizes publishing.

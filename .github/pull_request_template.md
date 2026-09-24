@@ -1,39 +1,36 @@
 ## What and why
 
-<!-- One or two sentences. Which intent feature does this ship? -->
-
-Ships intent **F?** — <feature name>
+<!-- Describe the problem, scope, and resulting behavior. Link the feature or issue. -->
 
 ## Artifact trail
 
-| Stage  | Artifact                                         |
-| ------ | ------------------------------------------------ |
-| Intent | `docs/intent.md` (F?)                            |
-| Spec   | `docs/superpowers/specs/<date>-<slug>-design.md` |
-| Plan   | `docs/superpowers/plans/<date>-<slug>.md`        |
-| Review | `docs/superpowers/reviews/<slug>-review.md`      |
+<!-- Use actual project paths or links. Mark a stage not applicable with a reason. -->
 
-## Done when (copied from the spec)
+| Stage                        | Artifact or reference |
+| ---------------------------- | --------------------- |
+| Requirements / issue         |                       |
+| Design                       |                       |
+| Plan                         |                       |
+| Review and reviewed revision |                       |
 
-<!-- Tick only items the review marked "met", with evidence. -->
+## Acceptance criteria
 
-- [ ] ...
+<!-- Copy the agreed criteria. Tick only those supported by review evidence. -->
+
+- [ ] <Criterion and evidence>
 
 ## Verification evidence
 
-```text
-npm run format:check  →
-npm run lint          →
-npm run typecheck     →
-npm test              →
-npm audit --audit-level=high →
-```
+<!-- Use the project's actual commands. Distinguish local and platform checks. -->
+
+| Check or command | Local / platform | Result and evidence                               |
+| ---------------- | ---------------- | ------------------------------------------------- |
+| <Check>          | <Where it ran>   | <Passed, failed, pending, or not run with reason> |
 
 ## Reviewer notes
 
-<!-- Where should a human look first? Anything parked or out of scope? -->
+<!-- Explain focus areas, limitations, and outstanding checks. -->
 
-## Review order
+## Review and merge
 
-1. Copilot code review
-2. Human review — the agent that wrote this code does not approve it
+<!-- Follow the team's review policy. Automated review does not replace human approval. -->

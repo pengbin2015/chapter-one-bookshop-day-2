@@ -1,122 +1,139 @@
 ---
 name: shipping-a-feature
-description: "Use when asked to ship, build, or deliver a feature listed in docs/intent.md end-to-end — e.g. 'ship F1', 'build feature F2 from the intent'. Runs design → plan → implement (TDD) → review → pull request, stopping at three human gates. Load this BEFORE brainstorming; it runs brainstorming itself."
+description: "Use when asked to deliver an agreed feature through design, planning, implementation, review, and a pull request."
 ---
 
 # Shipping a Feature
 
-Take one feature from `docs/intent.md` to an open pull request. This skill is
-the **conductor**: it does not re-describe how to design, plan, test, or review
-— it reads the skill for each step **by file path** and checks that the step's
-artifact exists before moving on.
+Coordinate one feature through durable artifacts and explicit approval gates.
+Read each required skill by its installed path. Repository conventions and
+explicit user instructions override the default artifact layout below.
 
-<HARD-GATE>
-Progress is decided by files, not by feeling. A step is complete only when its
-artifact exists (and is committed where stated). If the artifact is missing,
-you are still in that step. Never skip a step because it "seems done".
-</HARD-GATE>
+**Announce at entry and step changes:**
+`Using shipping-a-feature — <feature reference> — <step>.`
 
-## Announce every step
+## 0. Resolve context and resume state
 
-Start the reply, and every step change, with exactly:
-`Using shipping-a-feature to ship F<n> — step <k>/6: <step name>`
+Read repository instructions, the requested requirements or issue, contribution
+guidance, and relevant CI configuration. Resolve and record the feature reference,
+artifact paths, base branch, remote, and required validation commands. Pass these
+resolved values to every subagent. Use existing feature IDs; only use F1-style
+IDs when the project has no established scheme.
 
-## Step 0 — Resolve where to start (always run)
+Default layout, when the project defines none:
 
-1. Read `docs/intent.md`. It must exist and say `Status: Approved`, and must
-   contain the requested feature ID. If not: STOP and say
-   `No approved intent for F<n>. Run capturing-intent first.`
-2. Let `<slug>` = kebab-case feature name (e.g. `cart-checkout`).
-3. Branch: if on `main`, run `git switch -c feat/f<n>-<slug>`. Never commit
-   feature work to `main`.
-4. Find the first missing artifact and **jump to that step**:
+| Artifact | Default location |
+| --- | --- |
+| Intent | `docs/intent.md` |
+| Design | `docs/superpowers/specs/<date>-<slug>-design.md` |
+| Plan | `docs/superpowers/plans/<date>-<slug>.md` |
+| Final review | `docs/superpowers/reviews/<slug>-review.md` |
 
-| Step | Artifact that proves the step is done                                                   |
-| ---- | --------------------------------------------------------------------------------------- |
-| 1    | `docs/superpowers/specs/*-<slug>-design.md` committed, containing `Traces to: intent F<n>` |
-| 2    | `docs/superpowers/plans/*-<slug>.md` committed, containing `Status: Approved`            |
-| 3    | every phase in the plan ticked `[x]`, and `npm test` green                                |
-| 4    | reviewer verdict `READY` recorded in `docs/superpowers/reviews/<slug>-review.md`          |
-| 5    | a pull request URL for the branch                                                         |
+**Choose the entry mode before requiring an intent file:**
 
-**AFK mode.** If you are running as the Copilot cloud agent on an issue
-labelled `afk-ready`, the issue body is the approved spec and plan: skip steps
-1–2 and Gates 1–2, implement the issue as a single phase, then continue at
-step 3.
+- **Interactive feature:** require an approved intent or equivalent requirements
+  artifact containing the requested feature. If missing, report the gap and
+  route requirements work to the product-manager using `capturing-intent`.
+- **Approved issue:** unattended work is allowed only under the repository's
+  issue-approval policy and an authorized assignment. A label alone is not
+  approval unless that policy explicitly defines it as such. The issue must
+  contain agreed scope, acceptance criteria, an implementation plan, and checks.
+  Record its URL, revision or captured contents, approval evidence, and a local
+  spec/plan snapshot so implementer and reviewer receive durable inputs.
+  This entry does not require an unrelated intent file. Missing product
+  decisions or an incomplete plan block unattended execution.
 
-## Step 1 — Design (human gate 1)
+Inspect Git state before creating or reusing a feature branch. Resolve the base
+from task context, project conventions, or remote metadata. Never assume main.
+Reuse only a branch belonging to the same feature; preserve unrelated work.
+Do not commit implementation to the base or a protected branch.
 
-1. Read `.github/skills/brainstorming/SKILL.md` and follow it, with these
-   overrides:
-   - Seed it with the `F<n>` section of `docs/intent.md`, its pain points, and
-     its "Not in this feature" list. Do not re-ask what the intent answers.
-   - The spec's first lines must be `Traces to: intent F<n>` and a
-     `## Done when` list.
-   - Skip the visual companion.
-   - When brainstorming says to invoke writing-plans, come back here instead.
-2. **Gate 1:** the user approves the written spec (brainstorming's own
-   review step). Artifact check → step 2.
+Resume at the first incomplete or invalid step. File existence alone is not
+completion: check feature identity, approval for the current spec and plan,
+completed phase commits and review evidence, fresh required checks, and the
+reviewed revision. Changed requirements invalidate affected downstream work.
+A PR URL counts only when it belongs to this branch and target; report a merged
+or closed PR accurately instead of claiming an open handoff.
 
-## Step 2 — Plan (human gate 2)
+## 1. Design — human gate 1
 
-1. Dispatch the `planner` subagent with: the spec path, and the instruction
-   "Follow `.github/skills/writing-plans/SKILL.md`. Phase 1 must be a vertical
-   tracer bullet. Return the full plan markdown; do not choose an execution
-   mode."
-2. Save the result to `docs/superpowers/plans/<YYYY-MM-DD>-<slug>.md`. Every
-   phase heading gets a checkbox: `## [ ] Phase 1 — ...`.
-3. **Gate 2:** show the phase list and ask _"Approve this plan? (yes /
-   changes)"_. On yes, add `Status: Approved` under the title and commit with
-   `docs(plan): plan F<n> <slug>` (use `.github/skills/committing-changes/SKILL.md`).
-4. From here to step 5, **do not pause for the human** unless BLOCKED.
+Read `.github/skills/brainstorming/SKILL.md` and follow it with these overrides:
 
-## Step 3 — Implement, phase by phase
+- Seed it with the approved requirements, constraints, and exclusions. Do not
+  re-ask settled questions.
+- Use the resolved spec path and add `Traces to: <feature or issue reference>`,
+  observable `Done when` criteria, and approval metadata.
+- Do not commit during brainstorming's write-design step. Its first design
+  approval allows the draft to be written; gate 1 here is approval of the
+  written spec. After gate 1, record approval and commit through
+  `committing-changes`.
+- Return here before brainstorming's transition to `writing-plans`. The
+  orchestrator dispatches the planner in step 2.
 
-For each unticked phase, in order:
+In approved-issue mode, use the approved snapshot and recorded approval evidence
+instead of rerunning the interactive design interview.
 
-1. Dispatch the `implementer` subagent with only: the plan path, the phase
-   number, and the spec path. (It follows TDD and verification-before-completion.)
-2. Dispatch the `reviewer` subagent in **phase mode** with: the spec path, the
-   plan path, the phase number, and the diff range `<sha-before>..HEAD`.
-3. If the reviewer says `FIX`, send its findings back to the implementer.
-   At most **2 fix rounds** per phase; after that STOP and report BLOCKED with
-   the open findings.
-4. On `PASS`, tick the phase `[x]` in the plan and commit
-   `docs(plan): complete phase <k>`.
+## 2. Plan — human gate 2
 
-**Fallback:** if custom subagents are unavailable in this environment, read
-`.github/skills/subagent-driven-development/SKILL.md` and follow it for this
-step instead, then return here for step 4.
+Dispatch `planner` with the spec path, resolved artifact paths, and repository
+context. It follows `.github/skills/writing-plans/SKILL.md` and returns
+markdown without editing files or choosing an execution mode.
 
-## Step 4 — Final review
+Save the plan at the resolved path. Use `## [ ] Phase <k> — <name>` headings.
+Include exact files, applicable checks, acceptance criteria per phase, and a
+reference to the approved spec version. Phase 1 should establish the smallest
+useful end-to-end slice through the architecture relevant to this feature.
+Treat each task from `writing-plans` as one phase: retain its detailed steps
+under the phase heading and return here instead of offering execution modes.
 
-1. Dispatch the `reviewer` subagent in **final mode** with: the spec path,
-   the plan path, and the diff range `main..HEAD`.
-2. Save its report to `docs/superpowers/reviews/<slug>-review.md` and commit
-   `docs(review): final review for F<n>`.
-3. Verdict `NOT READY` → send findings to the implementer (max 2 rounds),
-   then re-run this step. Still not ready → STOP, report BLOCKED.
+Present the plan. Record the approver and date, set `Status: Approved`, and
+commit after approval. Reuse approval already recorded for this version.
+An approved-issue snapshot can supply this gate when its plan is complete.
+Proceed through implementation and review without repeated confirmation inside
+the approved scope; stop for unresolved decisions or new authority.
 
-## Step 5 — Open the pull request
+## 3. Implement and review each phase
 
-Read `.github/skills/opening-a-pull-request/SKILL.md` and follow it.
+For each incomplete phase:
 
-## Step 6 — Hand over (human gate 3)
+1. Record the starting commit. Dispatch `implementer` with spec and plan paths,
+   phase number, repository context, and any applicable reviewer findings.
+2. Dispatch a separate `reviewer` in phase mode with the same paths, phase
+   number, and the full diff from the phase's starting commit to current HEAD.
+3. On `FIX`, return the findings to the implementer, then review the whole
+   updated phase. Allow at most two fix rounds; report remaining blockers
+   rather than cycling indefinitely.
+4. On `PASS`, record the reviewed revision, evidence, and verdict in the plan
+   or a linked phase report. Tick that phase and commit the completion record.
 
-End with exactly:
+The implementer follows `test-driven-development` and
+`verification-before-completion`. Validation uses this repository's commands.
 
-```
-F<n> shipped to PR: <url>
-Gate 3 is yours: review the PR and merge when every done-when item is met.
-```
+If named custom agents are unavailable but subagents are supported, use fresh
+subagents with the corresponding role file and resolved context. If independent
+review cannot be run, report that limit and arrange human review; do not label
+self-review as an independent pass.
 
-Then STOP. **Never merge.** The agent that wrote the code does not approve it.
+## 4. Final review
 
-## Red flags
+Dispatch `reviewer` in final mode with spec and plan paths, resolved checks,
+the actual base comparison, and current revision. Review the full feature,
+including interactions between phases.
 
-| Thought                                           | Reality                                                       |
-| ------------------------------------------------- | ------------------------------------------------------------- |
-| "The spec is obvious, skip brainstorming"         | No spec file = still in step 1.                               |
-| "I'll implement all phases in one go"             | One phase per implementer dispatch keeps each in the smart zone. |
-| "Reviewer flagged something minor, I'll move on"  | Only `PASS` / `READY` moves you on.                           |
-| "Tests pass, I'll merge to save the human time"   | Never merge. Gate 3 belongs to a human.                       |
+Save its report at the resolved review path. Require `VERDICT: READY`.
+On `NOT READY`, send findings to the implementer and repeat review, allowing
+at most two fix rounds. Commit the final report and completion metadata using
+`.github/skills/committing-changes/SKILL.md`. Any later implementation change
+requires renewed review.
+
+## 5. Pull request
+
+Read `.github/skills/opening-a-pull-request/SKILL.md` and pass the resolved
+target, artifact paths, and review evidence. Do not merge.
+
+## 6. Handoff — human gate 3
+
+Report the actual PR URL, feature reference, verification status, and remaining
+platform checks. Ask the responsible human to review and merge when the
+acceptance criteria and project gates are satisfied. If publishing failed,
+report the blocker and prepared artifacts instead of claiming delivery.

@@ -1,112 +1,93 @@
 ---
 name: capturing-intent
-description: "Use when turning raw feedback, pain points, or a rough product idea into requirements BEFORE any single feature is designed — e.g. 'turn the shopper feedback into requirements', 'what should we build next', 'write the intent'. Reads docs/inputs/ and produces docs/intent.md with numbered features (F1, F2, ...)."
+description: "Use when turning feedback, research, pain points, or a product idea into agreed requirements before feature design."
 ---
 
 # Capturing Intent
 
-Turn raw input into `docs/intent.md`: **what** is wanted, **why**, and under
-**which constraints** — across the whole problem, not one feature. This is the
-Plan stage of the AI-native SDLC. The design of any single feature comes later
-(brainstorming → spec).
+Capture what is wanted, why it matters, and the constraints. Keep solution
+design for the later spec.
 
-**Announce first.** Start your reply with exactly:
-`Using capturing-intent to write docs/intent.md.`
+**Announce first:** `Using capturing-intent — <current step>.`
 
-<HARD-GATE>
-Do NOT design APIs, data models, files, or code. Do NOT invoke brainstorming,
-writing-plans, or any implementation skill. Intent says WHAT and WHY; the spec
-says HOW. If you catch yourself naming an endpoint or a function, stop and move
-it to "Open questions" instead.
-</HARD-GATE>
+## Resolve sources and destination
 
-## Checklist
+Read the user's supplied sources and relevant repository instructions.
+Use the project's existing requirements location and identifiers. If no
+convention exists, use `docs/intent.md` and feature IDs `F1`, `F2`, and so on.
+State the selected source set and output path before drafting.
 
-Create one todo per item and complete them in order.
+Input may be supplied in the conversation, files, or accessible linked material.
+Do not require a particular input directory. Read relevant architecture decisions
+and terminology where available; missing optional documents are not blockers.
+If source material is unavailable, identify what is missing instead of inventing it.
 
-1. **Read the sources.** Every file in `docs/inputs/`, plus anything the user
-   pasted. Then read `AGENTS.md`, `docs/adr/*.md`, and `docs/glossary.md` —
-   these are the constraints the intent must respect.
-2. **Synthesize pain points.** Cluster the raw input into 3–7 pain points. Each
-   pain point cites its sources by ID (e.g. `FB-03, FB-07`). Show the list to
-   the user before going further.
-3. **Ask clarifying questions — one at a time, at most five.** Prefer
-   multiple-choice. Cover, in this order, only what the sources leave open:
-   primary user · the one outcome that matters most · hard constraints · what
-   is explicitly out of scope · priority between competing pain points.
-4. **Draft `docs/intent.md`** using the template below. Use glossary terms.
-5. **Self-check** (fix inline, do not ask):
-   - every feature traces to at least one pain point, every pain point to a
-     source ID;
-   - every feature is small enough to ship as **one pull request** — if not,
-     split it (F3 → F3, F4);
-   - "Done when" items are observable outcomes, not implementation steps;
-   - nothing contradicts `AGENTS.md` guardrails or an ADR;
-   - no placeholders ("TBD", "etc.") outside "Open questions".
-6. **Product-owner review.** Present the file. Apply corrections. Ask:
-   _"Approve this intent? (yes / changes)"_. Loop until "yes".
-7. **Record approval and commit.** Set `Status: Approved`, fill `Approved by`
-   and `Date`, then commit on the current branch:
-   `docs(intent): capture intent for <topic>`
-8. **Hand off.** End with exactly:
-   `Intent approved. To build a feature, say: "Use the shipping-a-feature skill to ship F<n>."`
-   Then STOP. Do not start designing.
+## Workflow
 
-## Template — `docs/intent.md`
+1. **Synthesize the problem.** Group the evidence into pain points. Give each
+   source a stable reference (an existing ID, path and section, or URL). Show
+   the synthesis and distinguish evidence from assumptions.
+2. **Clarify material gaps.** Ask one question at a time, only where the evidence
+   leaves a decision open: users, outcomes, constraints, scope, or priority.
+   Prefer concise choices when useful.
+3. **Draft the intent.** Use the project's template, or the structure below.
+   Keep existing feature IDs stable when updating an intent.
+4. **Self-check.** Every feature traces to a pain point and source. Acceptance
+   criteria describe observable outcomes. Features are small enough to review
+   and deliver independently. Requirements respect established constraints.
+   Unresolved decisions remain explicit.
+5. **Review.** Present the written artifact and request approval. Apply changes
+   until the responsible person approves that version. Reuse explicit approval
+   already given for the same written version; do not infer it from "start."
+6. **Record and commit.** Record approval, approver, date, and source references.
+   Do not invent an approver's identity. Follow
+   `.github/skills/committing-changes/SKILL.md` when committing is authorized
+   by the request or the agreed workflow.
+7. **Hand off.** Report the artifact path and feature identifiers. Explain that
+   `shipping-a-feature` can take a selected feature through design and delivery.
+   Stop unless the user has also requested that next step.
+
+## Default structure
 
 ```markdown
 # Intent — <topic>
 
-Status: Draft | Approved · Approved by: <name> · Date: <YYYY-MM-DD>
-Sources: docs/inputs/<files>
+Status: Draft
+Approved by: <fill only after approval>
+Date: <date>
+Sources: <source references>
 
 ## Problem
-
-<2–4 sentences: who is hurting, how, and what it costs them.>
+<Who is affected, what happens, and the impact.>
 
 ## Pain points
-
-| ID  | Pain point | Evidence (source IDs) |
-| --- | ---------- | --------------------- |
-| P1  | ...        | FB-01, FB-04          |
+| ID | Pain point | Evidence |
+| --- | --- | --- |
+| P1 | <problem> | <source references> |
 
 ## Desired outcomes
-
-- <Observable change in the world, e.g. "A shopper can buy several books in one
-  go without emailing the shop.">
+- <Observable outcome.>
 
 ## Constraints
-
-- <From AGENTS.md / ADRs, e.g. "In-memory store only (ADR-0001).">
+- <Evidence-backed product, business, or technical constraint.>
 
 ## Features
-
-| ID  | Feature | Solves | Priority (MoSCoW) | Size (S/M/L) |
-| --- | ------- | ------ | ----------------- | ------------ |
-| F1  | ...     | P1, P2 | Must              | L            |
+| ID | Feature | Solves | Priority |
+| --- | --- | --- | --- |
+| F1 | <name> | P1 | <agreed priority> |
 
 ### F1 — <name>
-
-- **User value:** As a <user>, I can <action> so that <benefit>.
-- **Done when:** <2–4 observable outcomes>
-- **Not in this feature:** <tempting neighbours that belong elsewhere>
-
-<repeat for each feature>
+- **User value:** <User, capability, and benefit.>
+- **Done when:** <Observable acceptance criteria.>
+- **Not in this feature:** <Boundaries.>
 
 ## Out of scope
-
-- <Explicit non-goals for the whole intent.>
+- <Agreed exclusions.>
 
 ## Open questions
-
-- <Anything the design step must decide. Design decisions go here, not above.>
+- <Unresolved decisions, including questions for design.>
 ```
 
-## Red flags — stop and correct
-
-| Thought                                     | Reality                                                    |
-| ------------------------------------------- | ---------------------------------------------------------- |
-| "I'll sketch the API so the intent is concrete" | That is the spec's job. Put the question in Open questions. |
-| "The sources are thin, I'll fill the gaps"      | Ask. Invented requirements are the most expensive bug.      |
-| "One big feature is simpler"                    | If it cannot ship as one PR, split it.                      |
-| "The user said go, so I'll commit as Approved"  | Only an explicit approval of the written file counts.       |
+Use the team's prioritization scheme. Do not force a fixed number of pain
+points or features. Preserve technical constraints explicitly present in the
+sources, but do not invent APIs, data models, or implementation details.
