@@ -66,38 +66,63 @@ and any spec you write.
 Path-specific detail is in `.github/instructions/*.instructions.md`; those apply
 automatically to the files they name.
 
+## Skill routing — read before choosing a skill
+
+These rules take precedence over any skill-priority rule inside a skill
+(including `using-superpowers`). Pick the first row that matches, then read
+that skill **by path** and follow it.
+
+| The request...                                                         | Read first                                                                  |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| turns feedback, pain points, or an idea into requirements              | `.github/skills/capturing-intent/SKILL.md`                                  |
+| names a feature ID (`F1`, `F2`, ...) or asks to ship/build/deliver one | `.github/skills/shipping-a-feature/SKILL.md` (it runs brainstorming itself) |
+| asks to open or raise a pull request                                   | `.github/skills/opening-a-pull-request/SKILL.md`                            |
+| asks to commit                                                         | `.github/skills/committing-changes/SKILL.md`                                |
+| any other new feature or behaviour change                              | `.github/skills/brainstorming/SKILL.md`                                     |
+| a bug or failing test                                                  | `.github/skills/systematic-debugging/SKILL.md`                              |
+
+Every skill and agent starts its reply with an announce line
+(`Using <skill> ...` or `<agent>: ...`). If it is missing, the skill did not
+load — stop and read it.
+
+If `docs/intent.md` exists, every spec must trace to one of its feature IDs
+(`Traces to: intent F<n>`).
+
 ## What else is in .github/
 
-- `prompts/` — reusable slash commands: `/commit`.
-- `agents/orchestrator.agent.md`, `agents/implementer.agent.md`, and
-  `agents/tester.agent.md` — custom agents for the AFK issue pipeline.
-- `ISSUE_TEMPLATE/afk-ready.yml` — structured GitHub issue form for tickets
-  that are small and precise enough for the AFK pipeline.
+- `agents/` — role agents. `product-manager` and `orchestrator` appear in the
+  agent menu; `planner`, `implementer`, and `reviewer` run only as subagents.
+  Each agent file sets its model, tools, and the skills it reads.
+- `skills/capturing-intent/`, `skills/shipping-a-feature/`,
+  `skills/opening-a-pull-request/`, `skills/committing-changes/` — this repo's
+  own skills for the intent-to-PR flow.
 - `skills/brainstorming/`, `skills/using-git-worktrees/`,
   `skills/writing-plans/`, `skills/subagent-driven-development/`,
   `skills/executing-plans/`, `skills/test-driven-development/`,
   `skills/requesting-code-review/`,
-  `skills/finishing-a-development-branch/`, `skills/writing-skills/`, and
-  `skills/using-superpowers/` — vendored Superpowers Basic Workflow skills and
-  required upstream skill dependencies.
-- `skills/systematic-debugging/` and
-  `skills/verification-before-completion/` — upstream dependencies referenced by
-  the vendored Superpowers skills.
+  `skills/finishing-a-development-branch/`, `skills/writing-skills/`,
+  `skills/using-superpowers/`, `skills/systematic-debugging/`, and
+  `skills/verification-before-completion/` — vendored Superpowers skills.
+- `pull_request_template.md` — the PR body every agent-opened PR fills in.
+- `ISSUE_TEMPLATE/afk-ready.yml` — issue form for tickets small and precise
+  enough for the AFK pipeline.
 
-## Superpowers workflow
+## The intent-to-PR flow
 
-For Module 4 and Module 5, the intended workflow is:
+See `docs/ai-native-flow.md` for the full picture. In short:
 
-1. `brainstorming` — refine the rough cart + checkout idea and save the design.
-2. `using-git-worktrees` — create an isolated branch workspace after approval.
-3. `writing-plans` — break the design into small implementation tasks.
-4. `subagent-driven-development` or `executing-plans` — implement the plan.
-5. `test-driven-development` — use red-green-refactor while implementing.
-6. `requesting-code-review` — review between tasks.
-7. `finishing-a-development-branch` — verify and choose merge / PR / keep /
-   discard.
+1. `capturing-intent` — raw input in `docs/inputs/` → approved `docs/intent.md`
+   with features F1…Fn.
+2. `shipping-a-feature` — for one feature: `brainstorming` (spec, gate 1) →
+   `writing-plans` (plan, gate 2) → implement phase by phase with
+   `test-driven-development` + `verification-before-completion` →
+   `requesting-code-review` → `opening-a-pull-request` → a human reviews and
+   merges (gate 3).
+
+In class we use a feature branch instead of `using-git-worktrees`, and
+`opening-a-pull-request` instead of `finishing-a-development-branch`.
 
 ## AFK pipeline
 
-See `docs/afk-pipeline.md` for the issue-template, custom-agent, tester-gate,
-and PR-review flow used by the AFK demo.
+See `docs/afk-pipeline.md` for the issue-template, orchestrator, and PR-review
+flow used by the AFK demo.

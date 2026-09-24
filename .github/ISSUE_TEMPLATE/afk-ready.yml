@@ -10,6 +10,15 @@ body:
 
         Good AFK tickets fit inside the agent's smart context zone: one behaviour change, clear acceptance criteria, known files or surfaces, and no hidden product decisions.
 
+  - type: input
+    id: intent-feature
+    attributes:
+      label: Intent feature ID
+      description: Which feature in docs/intent.md does this ticket belong to? Leave blank if none.
+      placeholder: "F1"
+    validations:
+      required: false
+
   - type: textarea
     id: problem
     attributes:
@@ -34,7 +43,7 @@ body:
     id: acceptance-criteria
     attributes:
       label: Acceptance criteria
-      description: List objective checks the tester and reviewer can verify.
+      description: List objective checks the reviewer can verify.
       placeholder: |
         - POST /api/cart returns 201 and JSON with cartId, items, and total.
         - GET /api/cart/:cartId returns 200 for an existing cart.

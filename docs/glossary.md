@@ -15,5 +15,15 @@ commits, specs, and tickets so everyone (and every agent) means the same thing.
 | **Checkout** _(not built yet)_  | Turning a cart into an order. Introduced on Day 2.                                                                                                                                                    |
 | **Order** _(not built yet)_     | The record produced by a successful checkout.                                                                                                                                                         |
 
+## Workflow terms
+
+| Term           | Meaning                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------ |
+| **Intent**     | `docs/intent.md`: what we want, why, and under which constraints. Lists features by ID (F1, F2, ...).  |
+| **Feature ID** | `F<n>` from the intent. Specs, plans, branches (`feat/f<n>-<slug>`), and PRs all cite it.              |
+| **Spec**       | The design doc for one feature, in `docs/superpowers/specs/`. Holds the **done-when** list.            |
+| **Plan**       | The phased implementation plan for one spec, in `docs/superpowers/plans/`. Phase 1 is a tracer bullet. |
+| **Done-when**  | Observable criteria in the spec. A feature is finished only when every item is met, with evidence.     |
+
 Terms marked _not built yet_ name features the course adds. They are listed here
 so specs and tickets can use consistent language from the start.
