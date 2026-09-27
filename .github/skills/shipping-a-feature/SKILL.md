@@ -57,21 +57,26 @@ or closed PR accurately instead of claiming an open handoff.
 
 ## 1. Design — human gate 1
 
-Read `.github/skills/brainstorming/SKILL.md` and follow it with these overrides:
+For an interactive feature, dispatch `designer` with the approved requirements,
+constraints and exclusions, resolved spec path, feature reference, and relevant
+repository context. The designer reads and follows
+`.github/skills/brainstorming/SKILL.md` with these overrides; the orchestrator
+does not run brainstorming or write the spec itself:
 
 - Seed it with the approved requirements, constraints, and exclusions. Do not
   re-ask settled questions.
 - Use the resolved spec path and add `Traces to: <feature or issue reference>`,
   observable `Done when` criteria, and approval metadata.
-- Do not commit during brainstorming's write-design step. Its first design
-  approval allows the draft to be written; gate 1 here is approval of the
-  written spec. After gate 1, record approval and commit through
-  `committing-changes`.
-- Return here before brainstorming's transition to `writing-plans`. The
-  orchestrator dispatches the planner in step 2.
+- Do not commit during the write-design step. Gate 1 is approval of the written
+  spec. If the user requests changes, return them to the designer. After gate 1,
+  record approval and commit through `committing-changes`.
+- The designer returns to the orchestrator before transitioning to
+  `writing-plans`; the orchestrator dispatches the planner in step 2.
 
-In approved-issue mode, use the approved snapshot and recorded approval evidence
-instead of rerunning the interactive design interview.
+In approved-issue mode, dispatch the designer with the approved snapshot and
+recorded approval evidence to create the required local spec snapshot without
+rerunning the interactive design interview. Reuse the recorded approval for
+gate 1.
 
 ## 2. Plan — human gate 2
 

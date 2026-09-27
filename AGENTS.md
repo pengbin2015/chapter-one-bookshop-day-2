@@ -98,8 +98,8 @@ not approval.
 ## What else is in .github/
 
 - `agents/` — role agents. `product-manager` and `orchestrator` appear in the
-  agent menu; `planner`, `implementer`, and `reviewer` run only as subagents.
-  Each agent file sets its model, tools, and the skills it reads.
+  agent menu; `designer`, `planner`, `implementer`, and `reviewer` run only as
+  subagents. Each agent file sets its model, tools, and the skills it reads.
 - `skills/capturing-intent/`, `skills/shipping-a-feature/`,
   `skills/opening-a-pull-request/`, `skills/committing-changes/` — this repo's
   own skills for the intent-to-PR flow.
@@ -120,11 +120,11 @@ See `docs/ai-native-flow.md` for the full picture. In short:
 
 1. `capturing-intent` — raw input in `docs/inputs/` → approved `docs/intent.md`
    with features F1…Fn.
-2. `shipping-a-feature` — for one feature: `brainstorming` (spec, gate 1) →
-   `writing-plans` (plan, gate 2) → implement phase by phase with
-   `test-driven-development` + `verification-before-completion` →
-   `requesting-code-review` → `opening-a-pull-request` → a human reviews and
-   merges (gate 3).
+2. `shipping-a-feature` — for one feature: `designer` runs `brainstorming`
+   and writes the spec (gate 1) → `writing-plans` (plan, gate 2) → implement
+   phase by phase with `test-driven-development` +
+   `verification-before-completion` → `requesting-code-review` →
+   `opening-a-pull-request` → a human reviews and merges (gate 3).
 
 This repository uses a feature branch instead of `using-git-worktrees`, and
 `opening-a-pull-request` instead of `finishing-a-development-branch`.
