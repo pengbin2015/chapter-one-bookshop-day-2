@@ -28,6 +28,7 @@ Optional glossaries or architecture records should be used when available.
 | --------------- | --------------------------------------------------------------------- | --------------------- |
 | product-manager | Capture and obtain approval for requirements                          | Yes                   |
 | orchestrator    | Coordinate design through PR delivery and maintain workflow artifacts | Yes                   |
+| designer        | Turn approved requirements into a written spec                        | Subagent              |
 | planner         | Return a phased plan without editing                                  | Subagent              |
 | implementer     | Implement and verify an approved phase                                | Subagent              |
 | reviewer        | Independently check criteria and report findings                      | Subagent              |
@@ -45,7 +46,7 @@ sandboxing. Configure runtime permissions according to the team's needs.
 1. Ask product-manager to capture requirements from the relevant evidence.
    Review the written intent and approve it.
 2. Give the approved intent path and selected feature reference to orchestrator.
-   It uses `shipping-a-feature` to run design through `brainstorming`.
+   It dispatches **designer**, which uses `brainstorming` to produce the spec.
    Review and approve the written spec.
 3. Orchestrator obtains the phased plan from planner. Review and approve it.
 4. Orchestrator alternates implementer and reviewer for each phase, records
@@ -69,8 +70,8 @@ requirements, design/plan, and merge.
 
 1. Open this repository in VS Code with GitHub Copilot custom agents enabled.
 2. Confirm that `product-manager` and `orchestrator` appear in the agent picker.
-   `planner`, `implementer`, and `reviewer` are intentionally subagents and
-   should not be selected directly.
+   `designer`, `planner`, `implementer`, and `reviewer` are intentionally
+   subagents and should not be selected directly.
 3. Start from a clean feature branch. Do not run the delivery demo on the base
    or protected branch.
 4. Show the audience the source, constraints, and routing files:
@@ -137,7 +138,7 @@ and route the work back to product-manager.
 
 ### 4. Review design — human gate 1
 
-The orchestrator now owns the workflow. It uses `brainstorming` with the
+The orchestrator dispatches **designer**, which uses `brainstorming` with the
 approved requirement as input and should:
 
 1. Reuse settled constraints from `AGENTS.md`, the ADRs, glossary, and intent.
@@ -146,13 +147,11 @@ approved requirement as input and should:
 4. Write the selected design under
    `docs/superpowers/specs/<date>-<slug>-design.md` with
    `Traces to: F1`, observable `Done when` criteria, and approval metadata.
-5. Present the written design for review. Approval of an earlier chat summary
-   is not approval of the saved file.
+5. Return to the orchestrator without invoking `writing-plans` or any other skill.
 
 Open and inspect the design, request any correction, then explicitly approve
 that written version. The orchestrator records approval and commits the spec.
-It returns to `shipping-a-feature`; it does not let `brainstorming` start
-implementation or planning by itself.
+The designer does not commit and does not proceed to planning on its own.
 
 ### 5. Review the implementation plan — human gate 2
 
@@ -230,7 +229,7 @@ affected approvals or review evidence.
 
 ## Share with another project
 
-Copy the five role files, the four workflow skills, and their dependency skills
+Copy the six role files, the four workflow skills, and their dependency skills
 with supporting files and license notices. The required dependency entrypoints are:
 
 - `.github/skills/brainstorming/SKILL.md`
