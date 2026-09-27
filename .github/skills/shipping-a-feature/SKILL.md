@@ -73,6 +73,13 @@ does not run brainstorming or write the spec itself:
 - The designer returns to the orchestrator before transitioning to
   `writing-plans`; the orchestrator dispatches the planner in step 2.
 
+If the designer returns open product questions during interactive work, ask the
+user one question at a time, then redispatch the designer with the answers.
+Keep gate 1 blocked until the designer resolves those questions in the spec;
+do not make product decisions on the user's behalf. In approved-issue mode, if
+an open question cannot be resolved from the approved snapshot, stop and request
+clarification rather than expanding the approved scope.
+
 In approved-issue mode, dispatch the designer with the approved snapshot and
 recorded approval evidence to create the required local spec snapshot without
 rerunning the interactive design interview. Reuse the recorded approval for

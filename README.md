@@ -14,13 +14,13 @@ SDLC Playbook:
 
 - `capturing-intent` turns raw feedback in `docs/inputs/` into an approved
   `docs/intent.md` with numbered features (F1, F2, ...).
-- `shipping-a-feature` takes one feature to a pull request: `brainstorming`
-  (spec) → `writing-plans` (plan) → implementation with
-  `test-driven-development` and `verification-before-completion` →
+- `shipping-a-feature` takes one feature to a pull request: `designer` runs
+  `brainstorming` and writes the spec → `writing-plans` (plan) → implementation
+  with `test-driven-development` and `verification-before-completion` →
   `requesting-code-review` → `opening-a-pull-request`.
-- Five role agents in `.github/agents/`: `product-manager` and `orchestrator`
-  (pick them in the agent menu), plus `planner`, `implementer`, and `reviewer`
-  (subagents).
+- Six role agents in `.github/agents/`: `product-manager` and `orchestrator`
+  (pick them in the agent menu), plus `designer`, `planner`, `implementer`, and
+  `reviewer` (subagents).
 
 See `docs/ai-native-flow.md` for the detailed interactive demo, workflow, and
 instructions for sharing the agents and skills with other projects.
@@ -83,5 +83,5 @@ role agents in `.github/agents/`, and skills in `.github/skills/`.
 For the cart + checkout exercise, pick the **product-manager** agent and say
 "Turn the feedback in docs/inputs into an intent," then approve the requirements.
 Next, pick the **orchestrator** agent (or press **Build this feature →**) and say
-"Ship F1." The orchestrator handles design and planning approvals before
-implementation.
+"Ship F1." The orchestrator delegates design to `designer` and planning to
+`planner`, handling their approval gates before implementation.
