@@ -116,19 +116,9 @@ from a dry run as a fallback.
   and `.github/instructions/` for project context and skill routing, but is not
   explicitly directed to use `shipping-a-feature` in approved-issue mode. Observe
   the first dry run to see how Copilot interprets the issue; if it asks interactive
-  design questions rather than treating the issue as an approved plan, use the
-  local fallback instead and pass the prompt there.
+  design questions rather than treating the issue as an approved plan, comment on
+  the issue directing Copilot to treat the existing plan as approved and proceed.
 - **Public repository.** Copilot automations (issue-opened triggers) need a
   private or internal repository, so this demo uses Actions for validation and
   manual UI assignment instead.
 
-## Local fallback
-
-If the cloud run is unavailable, select **orchestrator** in VS Code, give it
-the issue URL and a copy of the issue, and say:
-
-> Use `shipping-a-feature` in approved-issue mode for issue #<number>. The
-> `ready-for-agent` label is the approval. Execute only the approved plan, open
-> a PR when the review evidence is ready, and do not merge.
-
-Tell the class it is a local run of the same contract, not a cloud dispatch.
