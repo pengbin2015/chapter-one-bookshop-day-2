@@ -91,9 +91,10 @@ Reusable agents and skills resolve project choices from this file. This
 repository uses `docs/intent.md`, the artifact directories under
 `docs/superpowers/`, and the commands listed above. Final review also runs
 `npm run format:check` and `npm audit --audit-level=high`. Its PR review order
-is Copilot review followed by human review. Unattended issues require recorded
-approval of scope and plan plus an authorized assignment; a label alone is
-not approval.
+is Copilot review followed by human review. For issue work, the
+`ready-for-agent` label applied by a user with write access is the recorded
+approval; `.github/workflows/assign-to-agent.yml` verifies the labeler and makes
+the authorized assignment to Copilot cloud agent.
 
 ## What else is in .github/
 
@@ -111,8 +112,12 @@ not approval.
   `skills/using-superpowers/`, `skills/systematic-debugging/`, and
   `skills/verification-before-completion/` — vendored Superpowers skills.
 - `pull_request_template.md` — the PR body every agent-opened PR fills in.
-- `ISSUE_TEMPLATE/afk-ready.yml` — issue form for tickets small and precise
-  enough for the AFK pipeline.
+- `ISSUE_TEMPLATE/ready-for-agent.yml` — issue form for small, well-defined
+  tickets that Copilot cloud agent can deliver as one pull request.
+- `workflows/assign-to-agent.yml` — starts Copilot cloud agent with the
+  `orchestrator` agent when a maintainer adds the `ready-for-agent` label.
+- `workflows/ci.yml` — the checks above, on every pull request and on `main`.
+- `workflows/copilot-setup-steps.yml` — installs dependencies for the agent.
 
 ## The intent-to-PR flow
 
@@ -129,8 +134,8 @@ See `docs/ai-native-flow.md` for the full picture. In short:
 This repository uses a feature branch instead of `using-git-worktrees`, and
 `opening-a-pull-request` instead of `finishing-a-development-branch`.
 
-## AFK pipeline
+## Team delivery on the cloud
 
-See `docs/afk-pipeline.md` for the issue contract, orchestrator, and PR-review
-flow. The existing CI workflow prints the intended flow and validates this
-repository; it does not dispatch agents or open PRs.
+See `docs/cloud-delivery.md`: a maintainer labels a well-defined issue
+`ready-for-agent`, Copilot cloud agent delivers it with `shipping-a-feature` in
+approved-issue mode, and a developer reviews and merges the pull request.

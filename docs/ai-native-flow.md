@@ -55,14 +55,14 @@ sandboxing. Configure runtime permissions according to the team's needs.
 
 Product-manager stops at approved requirements. Design and planning gates
 belong to the orchestrator's delivery workflow. For approved issue work, see
-[Unattended issue delivery](afk-pipeline.md).
+[Team delivery on the cloud](cloud-delivery.md).
 
 Use each skill's announcement to see the selected procedure. An announcement
 alone is not proof that the instructions were loaded or followed.
 
 ## Demo 1 — interactive AI-native flow
 
-Run this demo before the AFK demo. It shows the same delivery contract with
+Run this demo before the cloud delivery demo. It shows the same delivery contract with
 the human present at the three decisions that should not be delegated:
 requirements, design/plan, and merge.
 

@@ -27,8 +27,8 @@ instructions for sharing the agents and skills with other projects.
 Project-specific constraints live in `AGENTS.md`; reusable roles discover them
 there.
 
-Then use `docs/afk-pipeline.md` for the detailed approved-issue/AFK demo, issue
-contract, local fallback, and integration limits.
+Then use `docs/cloud-delivery.md` for the team-delivery demo: a labelled issue
+starts Copilot cloud agent, which opens a pull request for a developer to review.
 
 ## Run it
 
