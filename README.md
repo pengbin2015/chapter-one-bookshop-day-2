@@ -80,8 +80,11 @@ Read **`AGENTS.md`** first — it holds the conventions, guardrails, and the
 skill routing table. Path-specific rules live in `.github/instructions/`,
 role agents in `.github/agents/`, and skills in `.github/skills/`.
 
-For the cart + checkout exercise, pick the **product-manager** agent and say
-"Turn the feedback in docs/inputs into an intent," then approve the requirements.
-Next, pick the **orchestrator** agent (or press **Build this feature →**) and say
-"Ship F1." The orchestrator delegates design to `designer` and planning to
-`planner`, handling their approval gates before implementation.
+To build a feature, pick the **product-manager** agent and say "Turn the feedback
+in `docs/inputs/` into product requirements. Save the result at `docs/intent.md`
+and stop for my approval." Read the file and approve it. Next, press
+**Build this feature →** (or pick the **orchestrator** agent) and say "Use
+`shipping-a-feature` to deliver F1 from the approved `docs/intent.md`. Stop at
+every required human gate and do not merge." The orchestrator delegates design to
+`designer` and planning to `planner`, and stops for your approval at each gate.
+See `docs/ai-native-flow.md` for the full demo.
