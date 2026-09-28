@@ -7,7 +7,7 @@ and opens a draft pull request. A developer reviews it and decides whether to me
 
 ```
 issue ──► ready-for-agent label ──► assign-to-agent.yml ──► assign Copilot in UI ──► Copilot cloud agent ──► draft PR ──► CI + review ──► merge
- team        maintainer               Actions (validates)      maintainer               orchestrator            platform      developer
+ team        maintainer               Actions (validates)      maintainer               reads AGENTS.md         platform      developer
 ```
 
 People decide at both ends. Nobody presses "continue" in between.
@@ -111,12 +111,16 @@ from a dry run as a fallback.
   to separate `implementer` and `reviewer` subagents there. Check in a dry run.
   If it reviews its own work, the independent review happens at the pull
   request: CI, optional Copilot code review, and the developer.
-- **Custom agent name.** The API's `custom_agent` value is set to
-  `orchestrator`. If the dry run does not pick up the custom agent, check the
-  current API reference for the expected format; the workflow's custom
-  instructions still direct the agent to `shipping-a-feature`.
+- **No custom agent with UI assignment.** Assigning Copilot via the GitHub UI
+  does not pass a custom agent or custom instructions. Copilot reads `AGENTS.md`
+  and `.github/instructions/` for project context and skill routing, but is not
+  explicitly directed to use `shipping-a-feature` in approved-issue mode. Observe
+  the first dry run to see how Copilot interprets the issue; if it asks interactive
+  design questions rather than treating the issue as an approved plan, use the
+  local fallback instead and pass the prompt there.
 - **Public repository.** Copilot automations (issue-opened triggers) need a
-  private or internal repository, so this demo uses Actions and the API.
+  private or internal repository, so this demo uses Actions for validation and
+  manual UI assignment instead.
 
 ## Local fallback
 
