@@ -93,8 +93,8 @@ repository uses `docs/intent.md`, the artifact directories under
 `npm run format:check` and `npm audit --audit-level=high`. Its PR review order
 is Copilot review followed by human review. For issue work, the
 `ready-for-agent` label applied by a user with write access is the recorded
-approval; `.github/workflows/assign-to-agent.yml` verifies the labeler and makes
-the authorized assignment to Copilot cloud agent.
+approval; `.github/workflows/assign-to-agent.yml` validates the issue and records
+the approval; the maintainer then assigns Copilot manually in the GitHub UI.
 
 ## What else is in .github/
 
@@ -114,8 +114,9 @@ the authorized assignment to Copilot cloud agent.
 - `pull_request_template.md` — the PR body every agent-opened PR fills in.
 - `ISSUE_TEMPLATE/ready-for-agent.yml` — issue form for small, well-defined
   tickets that Copilot cloud agent can deliver as one pull request.
-- `workflows/assign-to-agent.yml` — starts Copilot cloud agent with the
-  `orchestrator` agent when a maintainer adds the `ready-for-agent` label.
+- `workflows/assign-to-agent.yml` — validates the issue and records the approval
+  when a maintainer adds the `ready-for-agent` label; the maintainer then assigns
+  Copilot manually in the GitHub UI.
 - `workflows/ci.yml` — the checks above, on every pull request and on `main`.
 - `workflows/copilot-setup-steps.yml` — installs dependencies for the agent.
 

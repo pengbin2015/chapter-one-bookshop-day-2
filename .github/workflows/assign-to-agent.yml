@@ -83,4 +83,14 @@ jobs:
 
       - name: Record the approval and prompt for manual assignment
         run: |
-          gh issue comment "$ISSUE" --repo "$REPO" --body "Approved by @$SENDER with the \`ready-for-agent\` label (approved body \`sha256:$BODY_SHA\`). To start the agent, assign **Copilot** to this issue using the assignees panel in the GitHub UI. Editing this issue removes the label and needs a fresh approval."
+          BODY="Approved by @$SENDER with the \`ready-for-agent\` label (approved body \`sha256:$BODY_SHA\`).
+
+          To start the agent:
+          1. Open the **Assignees** panel on this issue.
+          2. Assign **Copilot** and select **orchestrator** from the agent dropdown.
+          3. Paste this into the Optional prompt field:
+
+          > Use \`shipping-a-feature\` in approved-issue mode for issue #$ISSUE. The \`ready-for-agent\` label applied by @$SENDER is the approval. Execute only the approved plan, open a pull request when the review evidence is ready, and do not merge.
+
+          Editing this issue removes the label and needs a fresh approval."
+          gh issue comment "$ISSUE" --repo "$REPO" --body "$BODY"

@@ -18,13 +18,13 @@ management, and review rules.
 
 ## What is in the repository
 
-| File                                         | Purpose                                                                                                                                                                                       |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/ISSUE_TEMPLATE/ready-for-agent.yml` | The issue contract: goal, criteria, scope, context, plan, checks. Creating an issue does **not** start the agent.                                                                             |
+| File                                         | Purpose                                                                                                                                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.github/ISSUE_TEMPLATE/ready-for-agent.yml` | The issue contract: goal, criteria, scope, context, plan, checks. Creating an issue does **not** start the agent.                                                                                |
 | `.github/workflows/assign-to-agent.yml`      | On `ready-for-agent` label: verifies write access, checks all six form sections and readiness boxes, and records the approval. On issue edit: removes the label and comments. No secrets needed. |
-| `.github/workflows/copilot-setup-steps.yml`  | Installs Node dependencies in the agent's environment before it starts.                                                                                                                       |
-| `.github/workflows/ci.yml`                   | The five `AGENTS.md` checks on every pull request and on `main`.                                                                                                                              |
-| `.github/agents/orchestrator.agent.md`       | Follows `shipping-a-feature` in approved-issue mode.                                                                                                                                          |
+| `.github/workflows/copilot-setup-steps.yml`  | Installs Node dependencies in the agent's environment before it starts.                                                                                                                          |
+| `.github/workflows/ci.yml`                   | The five `AGENTS.md` checks on every pull request and on `main`.                                                                                                                                 |
+| `.github/agents/orchestrator.agent.md`       | Follows `shipping-a-feature` in approved-issue mode.                                                                                                                                             |
 
 ## Approval policy (this repository)
 
@@ -56,8 +56,10 @@ read the new text and re-apply the label before assigning the agent.
 2. **Approve it** — as the maintainer, add the `ready-for-agent` label.
 3. **Watch the workflow** — open the **Actions** tab: `Assign issue to agent`
    runs and the approval comment appears on the issue.
-4. **Start the agent** — back on the issue, open the assignees panel and assign
-   **Copilot**. The agent session appears on the issue page.
+4. **Start the agent** — back on the issue, open the assignees panel, assign
+   **Copilot**, select **orchestrator** from the agent dropdown, and paste the
+   prompt from the approval comment into the Optional prompt field. The agent
+   session appears on the issue page.
 5. **The pull request appears** — a draft PR on a `copilot/` branch. Walk the
    body: linked issue, criteria with evidence, local vs platform checks.
 6. **Review and merge** — review the diff and the CI result, then merge.
@@ -111,14 +113,11 @@ from a dry run as a fallback.
   to separate `implementer` and `reviewer` subagents there. Check in a dry run.
   If it reviews its own work, the independent review happens at the pull
   request: CI, optional Copilot code review, and the developer.
-- **No custom agent with UI assignment.** Assigning Copilot via the GitHub UI
-  does not pass a custom agent or custom instructions. Copilot reads `AGENTS.md`
-  and `.github/instructions/` for project context and skill routing, but is not
-  explicitly directed to use `shipping-a-feature` in approved-issue mode. Observe
-  the first dry run to see how Copilot interprets the issue; if it asks interactive
-  design questions rather than treating the issue as an approved plan, comment on
-  the issue directing Copilot to treat the existing plan as approved and proceed.
+- **Agent dropdown and prompt field.** The GitHub UI assignees panel has an agent
+  dropdown and an Optional prompt field. Select **orchestrator** and paste the
+  prompt from the approval comment. If the orchestrator is not listed in the
+  dropdown, Copilot falls back to reading `AGENTS.md` for context; paste the
+  prompt anyway to direct it to use `shipping-a-feature` in approved-issue mode.
 - **Public repository.** Copilot automations (issue-opened triggers) need a
   private or internal repository, so this demo uses Actions for validation and
   manual UI assignment instead.
-
