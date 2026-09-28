@@ -1,9 +1,7 @@
-# Starts Copilot cloud agent when a maintainer labels an issue `ready-for-agent`.
-# Demo-grade: the label from a user with write access is the approval.
-# Editing an approved issue removes the label, so the approved text and the text
-# Copilot receives cannot drift apart.
-# Needs repository secret AGENT_TOKEN: a fine-grained personal access token
-# (this repo; Metadata read; Actions, Contents, Issues, Pull requests read/write).
+# Validates a ready-for-agent issue when a maintainer applies the label.
+# After this workflow succeeds, assign Copilot cloud agent manually in the
+# GitHub UI (assignees panel) to start the run.
+# Uses only the default GITHUB_TOKEN — no repository secrets needed.
 name: Assign issue to agent
 
 on:
@@ -35,15 +33,11 @@ jobs:
     if: github.event.action == 'labeled' && github.event.label.name == 'ready-for-agent'
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.AGENT_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
       ISSUE: ${{ github.event.issue.number }}
       SENDER: ${{ github.event.sender.login }}
-      BASE: ${{ github.event.repository.default_branch }}
-      CUSTOM_AGENT: orchestrator
     steps:
-      - uses: actions/checkout@v4
-
       - name: Check the label came from someone with write access
         run: |
           perm=$(gh api "repos/$REPO/collaborators/$SENDER/permission" --jq .permission)
@@ -60,7 +54,6 @@ jobs:
           if [ "$(jq -r '.state' issue.json)" != "open" ]; then
             echo "::error::The issue is not open."; exit 1
           fi
-          # Validate what the API returns now, not the label event payload, which can already be stale.
           echo "BODY_SHA=$(sha256sum issue-body.md | cut -d' ' -f1)" >> "$GITHUB_ENV"
 
       - name: Check every required section is present and complete
@@ -88,50 +81,6 @@ jobs:
           fi
           [ "$missing" -eq 0 ] || exit 1
 
-      - name: Check the custom agent and Copilot are both available
+      - name: Record the approval and prompt for manual assignment
         run: |
-          if [ ! -f ".github/agents/${CUSTOM_AGENT}.agent.md" ]; then
-            echo "::error::No .github/agents/${CUSTOM_AGENT}.agent.md on $BASE; custom_agent must name a real agent file."; exit 1
-          fi
-          logins=$(gh api graphql \
-            -H 'GraphQL-Features: issues_copilot_assignment_api_support' \
-            -f owner="${REPO%/*}" -f name="${REPO#*/}" \
-            -f query='query($owner:String!,$name:String!){repository(owner:$owner,name:$name){suggestedActors(capabilities:[CAN_BE_ASSIGNED],first:100){nodes{login}}}}' \
-            --jq '.data.repository.suggestedActors.nodes[].login')
-          if ! grep -qx 'copilot-swe-agent' <<<"$logins"; then
-            echo "::error::Copilot cloud agent is not assignable in this repository. Enable it first."; exit 1
-          fi
-
-      - name: Assign Copilot with the orchestrator agent
-        run: |
-          jq -n --arg repo "$REPO" --arg base "$BASE" --arg issue "$ISSUE" \
-                --arg sender "$SENDER" --arg agent "$CUSTOM_AGENT" '{
-            assignees: ["copilot-swe-agent[bot]"],
-            agent_assignment: {
-              target_repo: $repo,
-              base_branch: $base,
-              custom_agent: $agent,
-              custom_instructions: ("Use shipping-a-feature in approved-issue mode for issue #" + $issue
-                + ". The ready-for-agent label applied by @" + $sender + " is the recorded approval."
-                + " Execute only the approved plan, open a pull request when the review evidence is ready, and do not merge."
-                + " If named subagents are unavailable here, review your own work against the acceptance criteria,"
-                + " say so plainly in the pull request, and leave independent review to CI and the human reviewer.")
-            }
-          }' | gh api --method POST "repos/$REPO/issues/$ISSUE/assignees" --input -
-
-      - name: Confirm the assignment landed and the text did not move
-        run: |
-          gh api "repos/$REPO/issues/$ISSUE" > after.json
-          if ! jq -r '.assignees[].login' after.json | grep -qi 'copilot'; then
-            echo "::error::Copilot was not assigned. Check AGENT_TOKEN permissions and the API response above."; exit 1
-          fi
-          if [ "$(jq -r '.body // ""' after.json | sha256sum | cut -d' ' -f1)" != "$BODY_SHA" ]; then
-            echo "::error::The issue was edited during assignment. Review the new text and approve it again."; exit 1
-          fi
-          echo "Assigned with custom_agent=$CUSTOM_AGENT and base=$BASE"
-
-      - name: Record the approval on the issue
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh issue comment "$ISSUE" --repo "$REPO" --body "Approved by @$SENDER with the \`ready-for-agent\` label. Assigned to Copilot with the \`$CUSTOM_AGENT\` agent (base: \`$BASE\`, approved body \`sha256:$BODY_SHA\`). Editing this issue removes the label and needs a fresh approval. A developer reviews and merges the pull request."
+          gh issue comment "$ISSUE" --repo "$REPO" --body "Approved by @$SENDER with the \`ready-for-agent\` label (approved body \`sha256:$BODY_SHA\`). To start the agent, assign **Copilot** to this issue using the assignees panel in the GitHub UI. Editing this issue removes the label and needs a fresh approval."
